@@ -27,3 +27,8 @@
 <li>mock数据，前后端分离开发</li>
 <li>高德定位</li>
 <li>flex弹性布局，开发移动端页面</li>
+
+运行方法
+```
+npm install
+npm run serve
