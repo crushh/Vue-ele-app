@@ -1,68 +1,69 @@
 <template>
-  <section class="index_container">
-  	<div class="index_shopInfo">
-  		<!-- 左侧图片 -->
-  		<div class="logo_container">
-  			<img :src="restaurant.image_path" alt>
-  		</div>
-  		<!-- 右侧内容 -->
-  		<div class="index_main">
-  	      <!--  第一行  品牌-->
-  	      <div class="index_shopname">
-  	      	<i v-if="restaurant.is_premium">品牌</i>
-  	      	<span>{{restaurant.name}}</span>
-  	      </div>
-  	      <!-- 第二行 星级 -->
-  	      <div class="index_rateWrap">
-  	            <Rating :rating="restaurant.rating" />
-  	      		<span class="rate">{{restaurant.rating}}</span>
-  	      		<span>月售{{restaurant.recent_order_num}}单</span>
-  	             <div v-if="restaurant.delivery_mode" class="delivery">
-  	             	<span class="icon_hollw">{{restaurant.delivery_mode.text}}</span>
-  	             </div>
-  	      </div>
-  	     <!--  第三行  配送-->
-  	     <div class="index_moneylimit">
-  	     	
-  	     		<span>￥{{restaurant.float_minimum_order_amount}}起送</span>
-  	     		<span>配送费{{restaurant.float_delivery_fee}}</span>
-  	     		<div class="index_distanceWrap">
-  	     			<span>{{(restaurant.distance/1000).toFixed(2)}}km</span>  <!-- 保留下两位 -->
-  	     			<span>{{restaurant.order_lead_time}}分钟</span>
-  	     		</div>
-  	     	
-  	     </div>
-  		</div>
-  	</div>
+  <section class="index-container">
+    <div class="index-shopInfo">
+      <!-- 左侧图片 -->
+      <div class="logo_container">
+        <img :src="restaurant.image_path" alt>
+      </div>
+      <!-- 右侧内容 -->
+      <div class="index_main">
+        <!-- 第一行 品牌 -->
+        <div class="index_shopname">
+          <i v-if="restaurant.is_premium">品牌</i>
+          <span>{{restaurant.name}}</span>
+        </div>
+
+        <!-- 第二行 星级 -->
+        <div class="index-rateWrap">
+          <div>
+            <Rating :rating="restaurant.rating"/>
+            <span class="rate">{{restaurant.rating}}</span>
+            <span>月售{{restaurant.recent_order_num}}单</span>
+          </div>
+          <div v-if="restaurant.delivery_mode" class="delivery">
+            <span class="icon-hollow">{{restaurant.delivery_mode.text}}</span>
+          </div>
+        </div>
+
+        <!-- 第三行 配送 -->
+        <div class="index-moneylimit">
+          <div>
+            <span>¥{{restaurant.float_minimum_order_amount}}起送</span>
+            |
+            <span>配送费¥{{restaurant.float_delivery_fee}}</span>
+          </div>
+          <div class="index-distanceWrap">
+            <span>{{(restaurant.distance / 1000).toFixed(2)}}km</span>
+            |
+            <span>{{restaurant.order_lead_time}}分钟</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
-
 <script>
-	import Rating from './Rating'
-	export default{
-		name:"IndexShop",
-		props:{
-			restaurant:{
-				type:Object
-			}
-		},
-		components:{
-			Rating
-		}
-
-	};
+import Rating from "./Rating";
+export default {
+  name: "IndeShop",
+  props: {
+    restaurant: Object
+  },
+  components: {
+    Rating
+  }
+};
 </script>
 
-
-<style>
-.index_container {
+<style scoped>
+.index-container {
   background: #fff;
   color: #666;
   padding: 4vw 0;
   border-bottom: 0.133333vw solid #eee;
 }
-.index_shopInfo {
+.index-shopInfo {
   display: flex;
   justify-content: flex-start;
   padding: 0 2.666667vw;
@@ -108,22 +109,22 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.index_rateWrap {
-  display: flex; 
+.index-rateWrap {
+  display: flex;
   align-items: center;
   overflow: hidden;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
-.index_rateWrap .rate {
+.index-rateWrap .rate {
   margin-right: 1.066667vw;
 }
-.index_moneylimit {
+.index-moneylimit {
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.index_moneylimit .index_distanceWrap {
+.index-moneylimit .index-distanceWrap {
   color: #999;
 }
 .delivery {

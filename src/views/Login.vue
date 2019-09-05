@@ -31,7 +31,6 @@
 </template>
 
 <script>
-// import img from "../assets/logo.jpg";
 import InputGroup from "../components/InputGroup";
 export default {
   name: "login",
@@ -167,5 +166,4 @@ export default {
 .login_btn button[disabled] {
   background-color: #8bda81;
 }
-
 </style>

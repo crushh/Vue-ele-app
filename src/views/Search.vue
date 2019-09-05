@@ -1,142 +1,133 @@
 <template>
-	<div class="search">
-     <Header :isLeft="true" title="搜索" />
-     <div class="search_header">
-     	<form class="search_wrap">
-     		<i class="fa fa-search"></i>
-     		<input type="text" v-model="key_word" placeholder="输入商家，商品信息">
-     		<button @click.prevent="searchHandle">搜索</button>
-     	</form>
-     </div>
-     <div class="shop" v-if="result && !showShop" >
-     	<div class="empty_wrap" v-if="empty">
-     		<img src="https://fuss10.elemecdn.com/d/60/70008646170d1f654e926a2aaa3afpng.png" >
-     		<div class="empty_txt">
-     			<h4>附近没有搜索结果</h4>
-     			<span>换个关键词试试吧</span>
-     		</div>
-     	</div>
-     	<div v-else>
-     		<SearchIndex @listClick="shopItemClick" :data="result.restaurants" />
-     		<SearchIndex  @listClick="shopItemClick" :data="result.words" />
-     	</div>
-     </div>
-
-    <div class="container" v-if="showShop">
-    	<!-- 导航 -->
-  <FilterView :filterData="filterData"   @update="update"/>
-      <div class="shoplist" 
-      v-infinite-scroll="loadMore"
-       :infinite-scroll-disabled="loading">
-       <IndexShop v-for="(item,index) in restaurants" 
-       :key="index"
-       :restaurant="item.restaurant"
-        />
-     </div>
+  <div class="search">
+    <Header :isLeft="true" title="搜索"/>
+    <div class="search_header">
+      <form class="search_wrap">
+        <i class="fa fa-search"></i>
+        <input type="text" v-model="key_word" placeholder="输入商家,商品信息">
+        <button @click.prevent="searchHandle">搜索</button>
+      </form>
     </div>
-
-	</div>
+    <div class="shop" v-if="result && !showShop">
+      <div class="empty_wrap" v-if="empty">
+        <img src="https://fuss10.elemecdn.com/d/60/70008646170d1f654e926a2aaa3afpng.png" alt>
+        <div class="empty_txt">
+          <h4>附近没有搜索结果</h4>
+          <span>换个关键词试试吧</span>
+        </div>
+      </div>
+      <div v-else>
+        <SearchIndex @click="shopItemClick" :data="result.restaurants"/>
+        <SearchIndex @click="shopItemClick" :data="result.words"/>
+      </div>
+    </div>
+    <div class="container" v-if="showShop">
+      <!-- 导航 -->
+      <FilterView :filterData="filterData" @update="update"/>
+      <div class="shoplist" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loading">
+        <IndexShop v-for="(item,index) in restaurants" :key="index" :restaurant="item.restaurant"/>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-	import Header from '../components/Header';
-	import SearchIndex from '../components/SearchIndex'
-  import FilterView from '../components/FilterView'
-  import IndexShop from '../components/IndexShop'
-  import { InfiniteScroll } from 'mint-ui';
-	export default{
-		name:"Search",
-		components:{
-			Header,
-			SearchIndex,
-      FilterView,
-      IndexShop 
-		},
-		data(){
-			return {
-				key_word:"",
-				result:null,
-				empty:false,
-				showShop:false,
-        filterData:null,
-        restaurants:[],
-        page:0,
-        size:7,
-        loading:false,
-        data:null
-			}
-		},
-		watch:{
-			key_word(){
-				this.empty=false;
-				this.showShop=false;
-				this.KeyWordChange();
-
-			}
-		},
-    created(){
-      this.$axios("/api/profile/filter").then(res=>{
+import Header from "../components/Header";
+import SearchIndex from "../components/SearchIndex";
+import FilterView from "../components/FilterView";
+import IndexShop from "../components/IndexShop";
+import { InfiniteScroll } from "mint-ui";
+export default {
+  name: "Search",
+  data() {
+    return {
+      key_word: "",
+      result: null,
+      empty: false,
+      showShop: false,
+      filterData: null,
+      restaurants: [],
+      page: 0,
+      size: 7,
+      loading: false,
+      data: null
+    };
+  },
+  watch: {
+    key_word() {
+      this.empty = false;
+      this.showShop = false;
+      this.keyWordChange();
+    }
+  },
+  created() {
+    this.$axios("/api/profile/filter").then(res => {
+      // console.log(res.data);
+      this.filterData = res.data;
+    });
+  },
+  methods: {
+    keyWordChange() {
+      // console.log(this.key_word);
+      this.$axios(`/api/profile/typeahead/${this.key_word}`)
+        .then(res => {
           // console.log(res.data);
-          this.filterData=res.data;
-
+          this.result = res.data;
+        })
+        .catch(err => {
+          this.result = null;
         });
-
     },
-		methods:{
-			KeyWordChange(){
-               // console.log(this.key_word);
-               this.$axios(`/api/profile/typeahead/${this.key_word}`).then((res)=>{
-               	console.log(res.data);
-               	this.result=res.data;
-
-               }).catch(err=>{
-               	this.result=null;
-               })
-			},
-			searchHandle(){
-				if(!this.key_word) return;
-				//搜索
-				if(this.result&&
-				  (this.result.restaurants.length>0||this.result.words.length)
-				  ){
-					// console.log("有内容");
-				this.shopItemClick();
-				}else{
-					this.empty=true;
-				}
-			},
-			shopItemClick(){
-        this.page=0;
-        this.restaurants=[];
-				this.showShop=true;
-			},
-      update(condition){
-         // console.log(condition);
-          this.data=condition;
-          this.shopItemClick()
-      },
-      loadMore(){
-        console.log(1);
-       this.page++;
-       this.$axios.post(`/api/profile/restaurants/${this.page}/${this.size}`,this.data).then(res=>{
-          //this.restaurants=res.data;
-          if(res.data.length>0){
-            res.data.forEach(item=>{
+    searchHandle() {
+      if (!this.key_word) return;
+      // 搜索
+      if (
+        this.result &&
+        (this.result.restaurants.length > 0 || this.result.words.length)
+      ) {
+        // console.log("有内容");
+        this.shopItemClick();
+      } else {
+        this.empty = true;
+      }
+    },
+    shopItemClick() {
+      this.page = 0;
+      this.restaurants = [];
+      this.showShop = true;
+    },
+    update(condation) {
+      // console.log(condation);
+      this.data = condation;
+      this.shopItemClick();
+    },
+    loadMore() {
+      this.page++;
+      this.$axios
+        .post(`/api/profile/restaurants/${this.page}/${this.size}`, this.data)
+        .then(res => {
+          // this.restaurants = res.data;
+          if (res.data.length > 0) {
+            res.data.forEach(item => {
               this.restaurants.push(item);
             });
-          }else{
-            this.loading=true;
+          } else {
+            this.loading = true;
           }
         });
-      }
-		}
-
-	};
+    }
+  },
+  components: {
+    Header,
+    SearchIndex,
+    FilterView,
+    IndexShop
+  }
+};
 </script>
 
-
 <style scoped>
-	.search {
+.search {
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -180,17 +171,18 @@
   margin-left: 2.933333vw;
   font-size: 14px;
 }
-.shop{
-	width:100%;
-	height: calc(100%-95.5px);
-	overflow: auto;
+
+.shop {
+  width: 100%;
+  height: calc(100% - 95px);
+  overflow: auto;
 }
 
 .empty_wrap {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  /*background-color: #fff;*/
+  background: #fff;
   display: flex;
   justify-content: center;
 }

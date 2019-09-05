@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
-import MintUI from 'mint-ui'
-import 'mint-ui/lib/style.css'
+import MintUI from 'mint-ui';
+import 'mint-ui/lib/style.css';
 import router from './router';
 import store from './store';
 import axios from 'axios';
@@ -10,7 +10,6 @@ import { Indicator } from 'mint-ui';
 
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
-
 
 Vue.use(MintUI);
 
@@ -38,7 +37,6 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 new Vue({
   router,

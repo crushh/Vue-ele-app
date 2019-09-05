@@ -106,6 +106,10 @@ export default {
 </script>
 
 <style scoped>
+  button{
+    border: none;
+    background-color:white;
+  }
 .city {
   width: 100%;
   height: 100%;
@@ -140,9 +144,7 @@ export default {
 }
 .search_wrap button {
   outline: none;
-  border:none;
   color: #009eef;
-  background-color: #fff;
 }
 
 .location {

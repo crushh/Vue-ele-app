@@ -1,24 +1,31 @@
 <template>
-  <div class="header">
-    <!-- 左侧返回 -->
+  <header class="header">
+    <!-- 左侧返回按钮 -->
     <div class="header-button is-left" v-show="isLeft">
       <i class="fa fa-chevron-left"></i>
       <button @click="$router.go(-1)">返回</button>
     </div>
-    <!-- 中间标题 -->
+    <!-- 标题 -->
     <h1 class="header-title">{{title}}</h1>
-  </div>
+    <!-- 右侧图标 -->
+    <div class="header-button is-right" v-show="btn_icon">
+      <button @click="$emit('rightClick')">
+        <i :class="'fa fa-'+ btn_icon"></i>
+      </button>
+    </div>
+  </header>
 </template>
 
 <script>
 export default {
-  name: "Header",
+  name: "Hader",
   props: {
     title: String,
     isLeft: {
       type: Boolean,
       default: false
-    }
+    },
+    btn_icon: String
   }
 };
 </script>
@@ -58,5 +65,8 @@ export default {
 }
 .is-left {
   text-align: left;
+}
+.is-right {
+  text-align: right;
 }
 </style>

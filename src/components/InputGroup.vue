@@ -38,6 +38,10 @@ export default {
 </script>
 
 <style scoped>
+
+  input{
+    border:none;
+  }
 .input_group {
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -50,7 +54,6 @@ export default {
   height: 100%;
   width: 60%;
   outline: none;
-  border: 0;
 }
 .input_group button {
   border: none;
